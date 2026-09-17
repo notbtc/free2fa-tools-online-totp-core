@@ -1,0 +1,40 @@
+name: Publish to npm
+
+# Trusted publishing (OIDC): no npm token is stored anywhere. The npm CLI
+# exchanges a short-lived GitHub OIDC token for a publish credential, and npm
+# attaches a provenance attestation automatically.
+#
+# Setup on npmjs.com (Package -> Settings -> Trusted Publisher):
+#   Organization or user : notbtc
+#   Repository           : free2fa-tools-online-totp-core
+#   Workflow filename    : publish.yml
+#   Allowed actions      : npm publish
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  id-token: write # required for OIDC
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          # Trusted publishing needs npm CLI >= 11.5.1 / Node >= 22.14.
+          node-version: '24'
+          registry-url: 'https://registry.npmjs.org'
+          package-manager-cache: false # never cache in a release build
+
+      - name: Test (RFC 4226 / RFC 6238 vectors)
+        run: npm test
+
+      - name: Publish
+        run: npm publish --access public
