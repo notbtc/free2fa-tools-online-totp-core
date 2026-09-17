@@ -6,15 +6,40 @@ export const ALGORITHMS = ['SHA1', 'SHA256', 'SHA512'];
 
 export const DEFAULTS = { digits: 6, period: 30, algorithm: 'SHA1' };
 
-function subtle() {
-  const s = globalThis.crypto && globalThis.crypto.subtle;
-  if (!s) {
+/**
+ * Node 18 doesn't put Web Crypto on `globalThis` (that landed in Node 19), so we
+ * pull it from `node:crypto` up front and keep it around for the sync APIs too.
+ * The specifier is assembled at runtime on purpose — a literal string would make
+ * bundlers try to resolve a Node builtin when this file is bundled for browsers.
+ */
+let fallbackCrypto = null;
+if (
+  typeof process !== 'undefined' &&
+  process.versions &&
+  process.versions.node &&
+  !(globalThis.crypto && globalThis.crypto.subtle)
+) {
+  try {
+    fallbackCrypto = (await import(/* @vite-ignore */ 'node:' + 'crypto')).webcrypto;
+  } catch (_) {
+    fallbackCrypto = null;
+  }
+}
+
+function cryptoObj() {
+  if (globalThis.crypto && globalThis.crypto.subtle) return globalThis.crypto;
+  return fallbackCrypto;
+}
+
+async function subtle() {
+  const c = cryptoObj();
+  if (!c || !c.subtle) {
     throw new Error(
       'Web Crypto (globalThis.crypto.subtle) is not available in this runtime. ' +
         'Use Node.js >= 18, or any modern browser served over https / localhost.'
     );
   }
-  return s;
+  return c.subtle;
 }
 
 /**
@@ -28,8 +53,9 @@ function subtle() {
 export async function hmac(algorithm, keyBytes, msgBytes) {
   const algo = WEBCRYPT_ALGO[String(algorithm || 'SHA1').toUpperCase()];
   if (!algo) throw new Error(`unsupported algorithm: ${algorithm}`);
-  const key = await subtle().importKey('raw', keyBytes, { name: 'HMAC', hash: algo }, false, ['sign']);
-  return new Uint8Array(await subtle().sign('HMAC', key, msgBytes));
+  const s = await subtle();
+  const key = await s.importKey('raw', keyBytes, { name: 'HMAC', hash: algo }, false, ['sign']);
+  return new Uint8Array(await s.sign('HMAC', key, msgBytes));
 }
 
 /**
@@ -101,8 +127,10 @@ export function remainingSeconds(period = DEFAULTS.period, timestamp = Date.now(
  */
 export function generateSecret(byteLength = 20) {
   const bytes = new Uint8Array(byteLength);
-  const c = globalThis.crypto;
-  if (!c || !c.getRandomValues) throw new Error('globalThis.crypto.getRandomValues is not available');
+  const c = cryptoObj();
+  if (!c || !c.getRandomValues) {
+    throw new Error('Web Crypto (getRandomValues) is not available in this runtime.');
+  }
   c.getRandomValues(bytes);
   return base32Encode(bytes);
 }
