@@ -1,9 +1,13 @@
 # free2fa-tools-online-totp-core
 
-[![npm version](https://img.shields.io/npm/v/free2fa-tools-online-totp-core.svg)](https://www.npmjs.com/package/free2fa-tools-online-totp-core)
+[![npm version](https://img.shields.io/npm/v/2faguide-tools-online-totp-core.svg)](https://www.npmjs.com/package/2faguide-tools-online-totp-core)
 [![license](https://img.shields.io/badge/license-MIT-green.svg)](./LICENSE)
 [![dependencies](https://img.shields.io/badge/dependencies-0-brightgreen.svg)](./package.json)
 [![node](https://img.shields.io/badge/node-%3E%3D18-brightgreen.svg)](https://nodejs.org)
+
+> Published on npm as **[`2faguide-tools-online-totp-core`](https://www.npmjs.com/package/2faguide-tools-online-totp-core)**
+> — npm rejects the word `free2fa` in new package names, so the registry name differs
+> from the repository name. It is the same code.
 
 Zero-dependency TOTP / HOTP core (RFC 4226 / RFC 6238) built on Web Crypto — the
 engine behind the **[Free2FA online 2FA tool](https://2faguide.com/online-totp/)**.
@@ -25,7 +29,7 @@ Runs unchanged in browsers, Node 18+, Cloudflare Workers, Deno and Bun. No
 ## Install
 
 ```bash
-npm install free2fa-tools-online-totp-core
+npm install 2faguide-tools-online-totp-core
 ```
 
 Or straight from git, if you would rather read the whole thing first (it is ~300 lines):
@@ -37,7 +41,7 @@ npm install github:notbtc/free2fa-tools-online-totp-core
 ## Usage
 
 ```js
-import { totp, hotp, generateSecret, remainingSeconds, buildOtpauth, parseOtpauth } from 'free2fa-tools-online-totp-core';
+import { totp, hotp, generateSecret, remainingSeconds, buildOtpauth, parseOtpauth } from '2faguide-tools-online-totp-core';
 
 // A secret is the Base32 string a platform shows when you pick "use an authenticator app"
 const secret = 'JBSWY3DPEHPK3PXP';
@@ -65,7 +69,7 @@ In a browser, just point a module script at it — no bundler needed:
 
 ```html
 <script type="module">
-  import { totp } from 'https://esm.sh/free2fa-tools-online-totp-core';
+  import { totp } from 'https://esm.sh/2faguide-tools-online-totp-core';
   document.querySelector('#code').textContent = await totp(secret);
 </script>
 ```

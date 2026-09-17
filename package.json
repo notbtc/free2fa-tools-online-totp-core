@@ -1,6 +1,6 @@
 {
-  "name": "free2fa-tools-online-totp-core",
-  "version": "0.1.0",
+  "name": "2faguide-tools-online-totp-core",
+  "version": "0.1.1",
   "description": "Zero-dependency TOTP / HOTP core (RFC 4226 / RFC 6238) built on Web Crypto — the engine behind the Free2FA online 2FA tool. Runs in browsers, Node 18+, Workers, Deno and Bun.",
   "type": "module",
   "main": "./src/index.js",
