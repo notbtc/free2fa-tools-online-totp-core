@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>TOTP code generator — free2fa-tools-online-totp-core demo</title>
+    <meta
+      name="description"
+      content="Live demo of free2fa-tools-online-totp-core: a zero-dependency TOTP / HOTP core (RFC 4226 / RFC 6238) running entirely in your browser."
+    />
+    <link rel="canonical" href="https://notbtc.github.io/free2fa-tools-online-totp-core/" />
+    <style>
+      :root {
+        --brand: #16b998;
+        --ink: #1a202c;
+        --muted: #64748b;
+        --line: #e2e8f0;
+        --bg: #f8fafc;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        padding: 40px 20px 64px;
+        background: var(--bg);
+        color: var(--ink);
+        font: 16px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial,
+          "PingFang SC", "Microsoft YaHei", sans-serif;
+      }
+      main { max-width: 720px; margin: 0 auto; }
+      h1 { font-size: 26px; margin: 0 0 8px; }
+      .sub { color: var(--muted); margin: 0 0 28px; }
+      .card {
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 24px;
+        margin-bottom: 20px;
+      }
+      label { display: block; font-weight: 600; margin-bottom: 6px; font-size: 14px; }
+      input[type="text"],
+      select {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        font: inherit;
+        background: #fff;
+      }
+      input[type="text"]:focus,
+      select:focus { outline: 2px solid var(--brand); outline-offset: 1px; border-color: var(--brand); }
+      .row { display: flex; gap: 12px; margin-top: 16px; flex-wrap: wrap; }
+      .row > div { flex: 1 1 120px; }
+      .code {
+        margin-top: 24px;
+        display: flex;
+        align-items: baseline;
+        gap: 16px;
+      }
+      .code b {
+        font-size: 44px;
+        letter-spacing: 4px;
+        font-variant-numeric: tabular-nums;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      }
+      .code span { color: var(--muted); font-variant-numeric: tabular-nums; }
+      .bar { height: 6px; background: var(--line); border-radius: 999px; overflow: hidden; margin-top: 14px; }
+      .bar i { display: block; height: 100%; background: var(--brand); width: 100%; transition: width 0.9s linear; }
+      .hint { color: var(--muted); font-size: 14px; margin-top: 10px; }
+      .err { color: #dc2626; font-size: 14px; margin-top: 10px; min-height: 22px; }
+      .meta { color: var(--muted); font-size: 14px; margin-top: 12px; }
+      a { color: var(--brand); }
+      footer { color: var(--muted); font-size: 14px; text-align: center; margin-top: 28px; }
+      code { background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-size: 14px; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>TOTP code generator</h1>
+      <p class="sub">
+        Live demo of
+        <a href="https://github.com/notbtc/free2fa-tools-online-totp-core">free2fa-tools-online-totp-core</a>
+        — a zero-dependency TOTP / HOTP core (RFC 4226 / RFC 6238). Everything runs in your
+        browser; nothing is sent anywhere.
+      </p>
+
+      <div class="card">
+        <label for="secret">Base32 secret (or paste a whole otpauth:// URI)</label>
+        <input id="secret" type="text" placeholder="JBSWY3DPEHPK3PXP" autocomplete="off" spellcheck="false" />
+
+        <div class="row">
+          <div>
+            <label for="digits">Digits</label>
+            <select id="digits">
+              <option value="6" selected>6</option>
+              <option value="8">8</option>
+            </select>
+          </div>
+          <div>
+            <label for="period">Period</label>
+            <select id="period">
+              <option value="30" selected>30s</option>
+              <option value="60">60s</option>
+            </select>
+          </div>
+          <div>
+            <label for="algorithm">Algorithm</label>
+            <select id="algorithm">
+              <option value="SHA1" selected>SHA1</option>
+              <option value="SHA256">SHA256</option>
+              <option value="SHA512">SHA512</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="code">
+          <b id="code">------</b>
+          <span id="left">—</span>
+        </div>
+        <div class="bar"><i id="bar"></i></div>
+        <div class="err" id="err"></div>
+        <div class="meta" id="meta"></div>
+        <p class="hint">
+          Try the RFC 6238 test secret <code>GEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQ</code> — with 8 digits
+          it should read <code>94287082</code> at T&nbsp;=&nbsp;59s.
+        </p>
+      </div>
+
+      <div class="card">
+        <p style="margin: 0">
+          Need a hosted version with QR import and saved accounts? Use the
+          <a href="https://2faguide.com/online-totp/" rel="noopener">Free2FA online 2FA tool</a> —
+          same algorithm, nothing uploaded. For a permanent home for your secrets,
+          <a href="https://2faguide.com/" rel="noopener">Free2FA</a> keeps them backed up
+          encrypted so a lost phone does not mean re-binding every account.
+        </p>
+      </div>
+
+      <footer>
+        MIT © Free2FA ·
+        <a href="https://github.com/notbtc/free2fa-tools-online-totp-core">Source on GitHub</a>
+      </footer>
+    </main>
+
+    <script type="module">
+      import { totp, remainingSeconds, parseOtpauth } from './lib/index.js';
+
+      const $ = (id) => document.getElementById(id);
+      const el = { secret: $('secret'), digits: $('digits'), period: $('period'), algorithm: $('algorithm') };
+      let timer = null;
+
+      function readForm() {
+        const raw = el.secret.value.trim();
+        const parsed = parseOtpauth(raw);
+        if (parsed) {
+          el.digits.value = String(parsed.digits);
+          el.period.value = String(parsed.period);
+          el.algorithm.value = parsed.algorithm;
+          return {
+            secret: parsed.secret,
+            info: parsed.issuer || parsed.name ? `otpauth URI — ${[parsed.issuer, parsed.name].filter(Boolean).join(' / ')}` : 'otpauth URI',
+          };
+        }
+        return { secret: raw, info: '' };
+      }
+
+      async function render() {
+        clearTimeout(timer);
+        const { secret, info } = readForm();
+        const period = Number(el.period.value);
+        const digits = Number(el.digits.value);
+
+        if (!secret) {
+          $('code').textContent = '------';
+          $('left').textContent = '—';
+          $('bar').style.width = '0%';
+          $('err').textContent = '';
+          $('meta').textContent = '';
+          return;
+        }
+
+        try {
+          const code = await totp(secret, { digits, period, algorithm: el.algorithm.value });
+          $('code').textContent = code.replace(/(\d{3})(\d{3})$/, '$1 $2');
+          $('err').textContent = '';
+          $('meta').textContent = info;
+        } catch (e) {
+          $('code').textContent = '------';
+          $('meta').textContent = '';
+          $('err').textContent = e.message;
+          return;
+        }
+
+        const left = remainingSeconds(period);
+        $('left').textContent = left + 's';
+        $('bar').style.width = (left / period) * 100 + '%';
+        timer = setTimeout(render, 1000);
+      }
+
+      for (const node of Object.values(el)) node.addEventListener('input', render);
+      el.secret.value = 'JBSWY3DPEHPK3PXP';
+      render();
+    </script>
+  </body>
+</html>

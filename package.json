@@ -1,0 +1,54 @@
+{
+  "name": "free2fa-tools-online-totp-core",
+  "version": "0.1.0",
+  "description": "Zero-dependency TOTP / HOTP core (RFC 4226 / RFC 6238) built on Web Crypto — the engine behind the Free2FA online 2FA tool. Runs in browsers, Node 18+, Workers, Deno and Bun.",
+  "type": "module",
+  "main": "./src/index.js",
+  "module": "./src/index.js",
+  "types": "./src/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./src/index.d.ts",
+      "import": "./src/index.js",
+      "default": "./src/index.js"
+    }
+  },
+  "files": [
+    "src",
+    "README.md",
+    "LICENSE"
+  ],
+  "sideEffects": false,
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "test": "node --test test/",
+    "sync:demo": "node -e \"require('fs').cpSync('src','docs/lib',{recursive:true,force:true})\""
+  },
+  "keywords": [
+    "totp",
+    "hotp",
+    "2fa",
+    "otp",
+    "two-factor",
+    "rfc4226",
+    "rfc6238",
+    "base32",
+    "otpauth",
+    "authenticator",
+    "webcrypto",
+    "zero-dependency",
+    "free2fa"
+  ],
+  "author": "Free2FA",
+  "license": "MIT",
+  "homepage": "https://2faguide.com",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/notbtc/free2fa-tools-online-totp-core.git"
+  },
+  "bugs": {
+    "url": "https://github.com/notbtc/free2fa-tools-online-totp-core/issues"
+  }
+}
